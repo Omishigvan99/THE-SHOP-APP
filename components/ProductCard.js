@@ -1,15 +1,7 @@
-import {
-    StyleSheet,
-    Text,
-    View,
-    Image,
-    TouchableOpacity,
-    TouchableNativeFeedback,
-} from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import React from "react";
-import { accentColor, white, primaryColor } from "../constants/colors";
-import { Platform } from "react-native-web";
-
+import CustomButton from "../components/CustomButton";
+import { accentColor, white } from "../constants/colors";
 const ProductCard = ({ productDetails, navigation }) => {
     return (
         <TouchableOpacity
@@ -39,27 +31,11 @@ const ProductCard = ({ productDetails, navigation }) => {
                     </View>
                 </View>
                 <View style={styles.buttonContainer}>
-                    {Platform.OS === "android" && Platform.Version >= 22 ? (
-                        <TouchableOpacity
-                            style={styles.button}
-                            activeOpacity={0.7}
-                        >
-                            <Text style={{ color: white }}>ADD TO CART</Text>
-                        </TouchableOpacity>
-                    ) : (
-                        <TouchableNativeFeedback
-                            background={TouchableNativeFeedback.Ripple(
-                                "rgba(0,0,0,0.5)",
-                                false
-                            )}
-                        >
-                            <View style={styles.button}>
-                                <Text style={{ color: white }}>
-                                    ADD TO CART
-                                </Text>
-                            </View>
-                        </TouchableNativeFeedback>
-                    )}
+                    <CustomButton
+                        title="ADD TO CART"
+                        bgColor={accentColor}
+                        fgColor={white}
+                    ></CustomButton>
                 </View>
             </View>
         </TouchableOpacity>
@@ -108,17 +84,13 @@ const styles = StyleSheet.create({
     buttonContainer: {
         width: "100%",
     },
-    button: {
-        padding: 15,
-        alignItems: "center",
-        backgroundColor: accentColor,
-    },
     title: {
         fontSize: 18,
+        fontFamily: "open-sans-regular",
     },
     price: {
         fontSize: 20,
         color: accentColor,
-        fontWeight: "bold",
+        fontFamily: "open-sans-bold",
     },
 });

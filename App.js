@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import { productsReducer } from "./store/reducers/productsReducer";
 
 import RootNavigator from "./Navigators/RootNavigator";
+import { useFonts } from "expo-font";
 
 let store = createStore(
     combineReducers({
@@ -13,6 +14,16 @@ let store = createStore(
 );
 
 export default function App() {
+    let [loaded] = useFonts({
+        "open-sans-regular": require("./assets/Open_Sans/static/OpenSans/OpenSans-Regular.ttf"),
+        "open-sans-italic": require("./assets/Open_Sans/static/OpenSans/OpenSans-Italic.ttf"),
+        "open-sans-bold": require("./assets/Open_Sans/static/OpenSans/OpenSans-Bold.ttf"),
+    });
+
+    if (!loaded) {
+        return null;
+    }
+
     return (
         <Provider store={store}>
             <RootNavigator></RootNavigator>
