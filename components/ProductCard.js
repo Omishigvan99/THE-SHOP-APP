@@ -2,7 +2,11 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import CustomButton from "../components/CustomButton";
 import { accentColor, white } from "../constants/colors";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../store/actions/cartActions";
 const ProductCard = ({ productDetails, navigation }) => {
+    let dispatch = useDispatch();
+
     return (
         <TouchableOpacity
             activeOpacity={0.9}
@@ -26,7 +30,7 @@ const ProductCard = ({ productDetails, navigation }) => {
                     <View style={styles.productInfo}>
                         <Text style={styles.title}>{productDetails.title}</Text>
                         <Text style={styles.price}>
-                            {"$" + productDetails.price}
+                            {"$" + productDetails.price.toFixed(2)}
                         </Text>
                     </View>
                 </View>
@@ -35,6 +39,9 @@ const ProductCard = ({ productDetails, navigation }) => {
                         title="ADD TO CART"
                         bgColor={accentColor}
                         fgColor={white}
+                        onPress={() => {
+                            dispatch(addToCart(productDetails));
+                        }}
                     ></CustomButton>
                 </View>
             </View>

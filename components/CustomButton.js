@@ -8,11 +8,12 @@ import {
 import React from "react";
 import { Platform } from "react-native";
 
-const CustomButton = ({ title, bgColor, fgColor, style }) => {
+const CustomButton = ({ title, bgColor, fgColor, style, onPress }) => {
     return Platform.OS === "android" && Platform.Version <= 21 ? (
         <TouchableOpacity
             style={{ ...styles.button, backgroundColor: bgColor, ...style }}
             activeOpacity={0.7}
+            onPress={onPress}
         >
             <Text style={{ color: fgColor }}>{title}</Text>
         </TouchableOpacity>
@@ -22,6 +23,7 @@ const CustomButton = ({ title, bgColor, fgColor, style }) => {
                 "rgba(0,0,0,0.5)",
                 false
             )}
+            onPress={onPress}
         >
             <View
                 style={{ ...styles.button, backgroundColor: bgColor, ...style }}

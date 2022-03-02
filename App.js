@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
 import { productsReducer } from "./store/reducers/productsReducer";
+import { cartReducer } from "./store/reducers/cartReducer";
 
 import RootNavigator from "./Navigators/RootNavigator";
 import { useFonts } from "expo-font";
@@ -10,7 +11,8 @@ import { useFonts } from "expo-font";
 let store = createStore(
     combineReducers({
         products: productsReducer,
-    })
+        cart: cartReducer,
+    }),
 );
 
 export default function App() {
