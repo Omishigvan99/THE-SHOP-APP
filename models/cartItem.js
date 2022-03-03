@@ -1,8 +1,9 @@
 export class CartItem {
-    constructor(quantity, prodTitle, prodPrice, sum) {
+    constructor(quantity, title, price, sum, image) {
         this.quantity = quantity;
-        this.prodTitle = prodTitle;
-        this.prodPrice = prodPrice;
+        this.title = title;
+        this.price = price;
         this.sum = sum;
+        this.image = image;
     }
 }

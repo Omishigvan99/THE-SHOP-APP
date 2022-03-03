@@ -4,12 +4,15 @@ import { useSelector } from "react-redux";
 import CustomButton from "../../components/CustomButton";
 import { accentColor, white } from "../../constants/colors";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../store/actions/cartActions";
 
 const ProductDetailsScreen = ({ navigation, route }) => {
     let productId = route.params.productId;
     let selectedProduct = useSelector((store) =>
         store.products.availableProducts.find((item) => item.id === productId)
     );
+    let dispatch = useDispatch();
 
     useEffect(() => {
         navigation.setOptions({
@@ -34,6 +37,9 @@ const ProductDetailsScreen = ({ navigation, route }) => {
                 bgColor={accentColor}
                 fgColor={white}
                 style={styles.button}
+                onPress={() => {
+                    dispatch(addToCart(selectedProduct));
+                }}
             ></CustomButton>
         </ScrollView>
     );
