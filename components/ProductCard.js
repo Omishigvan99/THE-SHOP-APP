@@ -1,18 +1,13 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import React from "react";
-import CustomButton from "../components/CustomButton";
 import { accentColor, white } from "../constants/colors";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../store/actions/cartActions";
-const ProductCard = ({ productDetails, navigation }) => {
-    let dispatch = useDispatch();
-
+const ProductCard = ({ productDetails, navigation, children, routeName }) => {
     return (
         <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => {
                 navigation.navigate({
-                    name: "Product Details",
+                    name: routeName,
                     params: {
                         productId: productDetails.id,
                         productTitle: productDetails.title,
@@ -35,16 +30,7 @@ const ProductCard = ({ productDetails, navigation }) => {
                         </Text>
                     </View>
                 </View>
-                <View style={styles.buttonContainer}>
-                    <CustomButton
-                        title="ADD TO CART"
-                        bgColor={accentColor}
-                        fgColor={white}
-                        onPress={() => {
-                            dispatch(addToCart(productDetails));
-                        }}
-                    ></CustomButton>
-                </View>
+                <View style={styles.buttonContainer}>{children}</View>
             </View>
         </TouchableOpacity>
     );

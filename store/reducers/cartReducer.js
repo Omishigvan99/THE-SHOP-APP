@@ -6,6 +6,7 @@ import {
     INCREMENT_QUANTITY,
     REMOVE_FROM_CART,
 } from "../actions/cartActions";
+import { DELETE_PRODUCT } from "../actions/productsAction";
 
 const initialState = {
     items: {},
@@ -95,6 +96,19 @@ export let cartReducer = (state = initialState, action) => {
         }
         case EMPTY_CART:
             return initialState;
+        case DELETE_PRODUCT: {
+            if (state.items[action.productId]) {
+                let updatedState = {
+                    ...state,
+                    totalAmount:
+                        state.totalAmount - state.items[action.productId].sum,
+                };
+                delete updatedState.items[action.productId];
+                return updatedState;
+            }
+
+            return state;
+        }
         default:
             return state;
     }
