@@ -1,12 +1,14 @@
 import { StyleSheet, Text, View, FlatList } from "react-native";
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { useSelector } from "react-redux";
 
 import ProductCard from "../../components/ProductCard";
 import { white } from "../../constants/colors";
 
+
 const ProductsOverviewScreen = ({ navigation }) => {
     let productsList = useSelector((state) => state.products.availableProducts);
+
     return (
         <View style={styles.container}>
             <FlatList

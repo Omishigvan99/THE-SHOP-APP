@@ -1,18 +1,25 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import "react-native-gesture-handler";
+import { StyleSheet } from "react-native";
+import { enableScreens } from "react-native-screens";
 import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
 import { productsReducer } from "./store/reducers/productsReducer";
 import { cartReducer } from "./store/reducers/cartReducer";
+import { orderReducer } from "./store/reducers/orderReducer";
 
 import RootNavigator from "./Navigators/RootNavigator";
 import { useFonts } from "expo-font";
+// import { composeWithDevTools } from "redux-devtools-extension";
+
+enableScreens();
 
 let store = createStore(
     combineReducers({
         products: productsReducer,
         cart: cartReducer,
-    }),
+        order: orderReducer,
+    })
+    // composeWithDevTools()d
 );
 
 export default function App() {

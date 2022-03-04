@@ -1,11 +1,14 @@
 import { StyleSheet, Text, View, FlatList } from "react-native";
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import CustomButton from "../../components/CustomButton";
 import { accentColor, white } from "../../constants/colors";
 import { useSelector } from "react-redux";
 import CartItem from "../../components/CartItem";
+import { useDispatch } from "react-redux";
+import { addOrder } from "../../store/actions/orderActions";
+import { emptyCart } from "../../store/actions/cartActions";
 
-const ShopCartScreen = () => {
+const ShopCartScreen = ({ navigation }) => {
     let totalAmount = useSelector((store) => store.cart.totalAmount);
     let cartItemsList = useSelector((store) => {
         let list = [];
@@ -24,6 +27,16 @@ const ShopCartScreen = () => {
         });
     });
 
+    let dispatch = useDispatch();
+
+    useLayoutEffect(() => {
+        let parentNavigator = navigation.getParent();
+        parentNavigator.setOptions({
+            headerTitle: "Cart",
+            headerRight: () => null,
+        });
+    }, [navigation]);
+
     return (
         <View style={styles.container}>
             <View style={styles.cartSummaryContainer}>
@@ -38,7 +51,10 @@ const ShopCartScreen = () => {
                         title="ORDER NOW"
                         bgColor={accentColor}
                         fgColor={white}
-                        onPress={() => {}}
+                        onPress={() => {
+                            dispatch(addOrder(cartItemsList, totalAmount));
+                            dispatch(emptyCart());
+                        }}
                         disabled={totalAmount ? false : true}
                     ></CustomButton>
                 </View>

@@ -2,6 +2,7 @@ import { CartItem } from "../../models/cartItem";
 import {
     ADD_TO_CART,
     DECREMENT_QUANTITY,
+    EMPTY_CART,
     INCREMENT_QUANTITY,
     REMOVE_FROM_CART,
 } from "../actions/cartActions";
@@ -92,6 +93,8 @@ export let cartReducer = (state = initialState, action) => {
             delete updatedState.items[action.productId];
             return updatedState;
         }
+        case EMPTY_CART:
+            return initialState;
         default:
             return state;
     }

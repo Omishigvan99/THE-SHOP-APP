@@ -1,9 +1,9 @@
 import { StyleSheet, Text, ScrollView, Image, View } from "react-native";
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { useSelector } from "react-redux";
 import CustomButton from "../../components/CustomButton";
+
 import { accentColor, white } from "../../constants/colors";
-import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../store/actions/cartActions";
 
@@ -14,7 +14,7 @@ const ProductDetailsScreen = ({ navigation, route }) => {
     );
     let dispatch = useDispatch();
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         navigation.setOptions({
             headerTitle: selectedProduct.title,
         });

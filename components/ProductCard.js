@@ -15,6 +15,7 @@ const ProductCard = ({ productDetails, navigation }) => {
                     name: "Product Details",
                     params: {
                         productId: productDetails.id,
+                        productTitle: productDetails.title,
                     },
                 });
             }}

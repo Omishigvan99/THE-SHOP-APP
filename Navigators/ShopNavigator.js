@@ -17,8 +17,12 @@ export default ShopNavigator = (props) => {
                     backgroundColor:
                         Platform.OS === "android" ? primaryColor : white,
                 },
+                headerTitleStyle: {
+                    fontFamily: "open-sans-bold",
+                },
                 headerTintColor:
                     Platform.OS === "android" ? white : primaryColor,
+                
             }}
         >
             <Stack.Screen
@@ -42,11 +46,27 @@ export default ShopNavigator = (props) => {
                             </HeaderButtons>
                         );
                     },
+                    headerLeft: () => {
+                        return (
+                            <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+                                <Item
+                                    title="cart"
+                                    iconName="md-menu"
+                                    onPress={() => {
+                                        navigation.toggleDrawer();
+                                    }}
+                                ></Item>
+                            </HeaderButtons>
+                        );
+                    },
                 })}
             ></Stack.Screen>
             <Stack.Screen
                 name="Product Details"
                 component={ProductDetailsScreen}
+                options={{
+                    headerTitle: "ProductDetails",
+                }}
             ></Stack.Screen>
             <Stack.Screen
                 name="Shop Cart"
