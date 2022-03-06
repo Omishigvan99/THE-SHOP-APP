@@ -1,4 +1,4 @@
-import { StyleSheet, View, FlatList } from "react-native";
+import { StyleSheet, View, FlatList, Alert } from "react-native";
 import React from "react";
 import { useSelector } from "react-redux";
 import ProductCard from "../../components/ProductCard";
@@ -41,7 +41,25 @@ const MyProductsScreen = ({ navigation }) => {
                                 bgColor={accentColor}
                                 fgColor={white}
                                 onPress={() => {
-                                    dispatch(deleteProduct(itemData.item.id));
+                                    Alert.alert(
+                                        "Are You Sure?",
+                                        "Do you want to delete the product " +
+                                            itemData.item.title,
+                                        [
+                                            { text: "No", style: "cancel" },
+                                            {
+                                                text: "Yes",
+                                                style: "destructive",
+                                                onPress: () => {
+                                                    dispatch(
+                                                        deleteProduct(
+                                                            itemData.item.id
+                                                        )
+                                                    );
+                                                },
+                                            },
+                                        ]
+                                    );
                                 }}
                                 containerStyle={{
                                     marginTop: 1,

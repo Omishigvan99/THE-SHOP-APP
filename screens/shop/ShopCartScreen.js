@@ -3,6 +3,7 @@ import React, { useLayoutEffect } from "react";
 import CustomButton from "../../components/CustomButton";
 import { accentColor, white } from "../../constants/colors";
 import { useSelector } from "react-redux";
+import CardContainer from "../../components/CardContainer";
 import CartItem from "../../components/CartItem";
 import { useDispatch } from "react-redux";
 import { addOrder } from "../../store/actions/orderActions";
@@ -65,7 +66,11 @@ const ShopCartScreen = ({ navigation }) => {
                 data={cartItemsList}
                 renderItem={(itemData) => {
                     return (
-                        <CartItem cartItemDetails={itemData.item}></CartItem>
+                        <CardContainer style={styles.cardContainer}>
+                            <CartItem
+                                cartItemDetails={itemData.item}
+                            ></CartItem>
+                        </CardContainer>
                     );
                 }}
                 keyExtractor={(item) => item.productId}
@@ -96,12 +101,19 @@ const styles = StyleSheet.create({
         backgroundColor: white,
         borderRadius: 10,
     },
+    cardContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        padding: 10,
+        backgroundColor: white,
+    },
     totalAmount: {
         fontFamily: "open-sans-bold",
         marginVertical: 5,
         fontSize: 18,
     },
     cartItemsContaier: {
+        flexGrow: 1,
         width: "100%",
         alignItems: "center",
     },

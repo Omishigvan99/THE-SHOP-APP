@@ -7,7 +7,7 @@ const OrderItem = ({ orderId, totalAmount, date, orderItems }) => {
     let [showDetails, setShowDetails] = useState(false);
 
     return (
-        <View style={styles.container}>
+        <>
             <Text style={styles.id}>Order ID:{orderId}</Text>
             <View style={styles.summary}>
                 <Text style={styles.totalAmount}>
@@ -78,7 +78,7 @@ const OrderItem = ({ orderId, totalAmount, date, orderItems }) => {
                     }}
                 ></FlatList>
             )}
-        </View>
+        </>
     );
 };
 

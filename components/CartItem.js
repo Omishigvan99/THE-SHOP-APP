@@ -14,7 +14,7 @@ import {
 const CartItem = ({ cartItemDetails }) => {
     let dispatch = useDispatch();
     return (
-        <View style={styles.container}>
+        <>
             <View style={styles.imageContainer}>
                 <Image
                     style={styles.image}
@@ -79,7 +79,7 @@ const CartItem = ({ cartItemDetails }) => {
                     }}
                 ></CustomButton>
             </View>
-        </View>
+        </>
     );
 };
 
@@ -96,9 +96,9 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     imageContainer: {
-        height: 150,
+        height: 170,
         width: 120,
-        marginRight: 5,
+        marginRight: 15,
     },
     image: {
         height: "100%",
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     infoContainer: {
         flex: 1,
         justifyContent: "space-between",
-        height: 150,
+        height: 170,
     },
     quantityContainer: {
         flexDirection: "row",

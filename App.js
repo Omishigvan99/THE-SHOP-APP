@@ -9,7 +9,6 @@ import { orderReducer } from "./store/reducers/orderReducer";
 
 import RootNavigator from "./Navigators/RootNavigator";
 import { useFonts } from "expo-font";
-// import { composeWithDevTools } from "redux-devtools-extension";
 
 enableScreens();
 
@@ -19,7 +18,6 @@ let store = createStore(
         cart: cartReducer,
         order: orderReducer,
     })
-    // composeWithDevTools()d
 );
 
 export default function App() {

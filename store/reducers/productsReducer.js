@@ -1,5 +1,11 @@
+import { uniqueId } from "lodash";
 import PRODUCTS from "../../data/dummy-data";
-import { DELETE_PRODUCT } from "../actions/productsAction";
+import Product from "../../models/product";
+import {
+    ADD_PRODUCT,
+    DELETE_PRODUCT,
+    EDIT_PRODUCT,
+} from "../actions/productsAction";
 
 let initialState = {
     availableProducts: PRODUCTS,
@@ -17,6 +23,51 @@ export let productsReducer = (state = initialState, action) => {
                 userProducts: state.userProducts.filter((product) => {
                     return product.id !== action.productId;
                 }),
+            };
+        }
+        case ADD_PRODUCT: {
+            let newProduct = new Product(
+                uniqueId("PD"),
+                "u1",
+                action.title,
+                action.imageUrl,
+                action.description,
+                action.price
+            );
+
+            return {
+                ...state,
+                availableProducts: state.availableProducts.concat(newProduct),
+                userProducts: state.userProducts.concat(newProduct),
+            };
+        }
+        case EDIT_PRODUCT: {
+            let productIndex = state.userProducts.findIndex((product) => {
+                return product.id === action.pid;
+            });
+
+            let editedProduct = new Product(
+                action.pid,
+                state.userProducts[productIndex].ownerId,
+                action.title,
+                action.imageUrl,
+                action.description,
+                state.userProducts[productIndex].price
+            );
+            let updatedUserProducts = [...state.userProducts];
+            updatedUserProducts[productIndex] = editedProduct;
+
+            productIndex = state.availableProducts.findIndex((product) => {
+                return product.id === action.pid;
+            });
+
+            let updatedAvailableProducts = [...state.availableProducts];
+            updatedAvailableProducts[productIndex] = editedProduct;
+
+            return {
+                ...state,
+                availableProducts: updatedAvailableProducts,
+                userProducts: updatedUserProducts,
             };
         }
     }

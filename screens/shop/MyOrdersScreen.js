@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, FlatList } from "react-native";
 import React from "react";
 import { useSelector } from "react-redux";
 
+import CardContainer from "../../components/CardContainer";
 import OrderItem from "../../components/OrderItem";
 import { white } from "../../constants/colors";
 
@@ -15,12 +16,14 @@ const MyOrdersScreen = () => {
                 data={ordersList}
                 renderItem={(itemData) => {
                     return (
-                        <OrderItem
-                            orderId={itemData.item.id}
-                            totalAmount={itemData.item.totalAmount}
-                            orderItems={itemData.item.orderItems}
-                            date={itemData.item.readableDate}
-                        ></OrderItem>
+                        <CardContainer style={styles.cardContainer}>
+                            <OrderItem
+                                orderId={itemData.item.id}
+                                totalAmount={itemData.item.totalAmount}
+                                orderItems={itemData.item.orderItems}
+                                date={itemData.item.readableDate}
+                            ></OrderItem>
+                        </CardContainer>
                     );
                 }}
             ></FlatList>
@@ -35,11 +38,17 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
     },
+    cardContainer: {
+        alignSelf: "center",
+        padding: 10,
+    },
     orderListContainer: {
-        // alignItems: "center",
+        flexGrow: 1,
+        paddingBottom: 10,
     },
     orderList: {
         backgroundColor: white,
         width: "100%",
+        paddingVertical: 10,
     },
 });
