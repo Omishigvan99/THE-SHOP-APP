@@ -1,6 +1,5 @@
 import Order from "../../models/order";
-import { ADD_ORDER } from "../actions/orderActions";
-import { uniqueId } from "lodash";
+import { ADD_ORDER, SET_ORDERS } from "../actions/orderActions";
 
 const initialState = {
     orders: [],
@@ -10,15 +9,21 @@ export const orderReducer = (state = initialState, action) => {
     switch (action.type) {
         case ADD_ORDER: {
             let order = new Order(
-                uniqueId("OD"),
+                action.id,
                 action.orderItems,
                 action.totalAmount,
-                new Date()
+                action.date
             );
 
             return {
                 orders: state.orders.concat([order]),
             };
+        }
+
+        case SET_ORDERS:{
+            return {
+                orders:action.orders
+            }
         }
         default:
             return state;

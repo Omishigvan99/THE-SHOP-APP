@@ -1,13 +1,20 @@
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import {
+    StyleSheet,
+    Text,
+    View,
+    FlatList,
+    ActivityIndicator,
+} from "react-native";
 import React, { useLayoutEffect } from "react";
 import CustomButton from "../../components/CustomButton";
-import { accentColor, white } from "../../constants/colors";
+import { accentColor, primaryColor, white } from "../../constants/colors";
 import { useSelector } from "react-redux";
 import CardContainer from "../../components/CardContainer";
 import CartItem from "../../components/CartItem";
 import { useDispatch } from "react-redux";
 import { addOrder } from "../../store/actions/orderActions";
 import { emptyCart } from "../../store/actions/cartActions";
+import { useState } from "react";
 
 const ShopCartScreen = ({ navigation }) => {
     let totalAmount = useSelector((store) => store.cart.totalAmount);
@@ -28,6 +35,7 @@ const ShopCartScreen = ({ navigation }) => {
         });
     });
 
+    let [isLoading, setLoading] = useState(false);
     let dispatch = useDispatch();
 
     useLayoutEffect(() => {
@@ -48,16 +56,29 @@ const ShopCartScreen = ({ navigation }) => {
                     >{`$${totalAmount.toFixed(2)}`}</Text>
                 </Text>
                 <View style={styles.buttonContainer}>
-                    <CustomButton
-                        title="ORDER NOW"
-                        bgColor={accentColor}
-                        fgColor={white}
-                        onPress={() => {
-                            dispatch(addOrder(cartItemsList, totalAmount));
-                            dispatch(emptyCart());
-                        }}
-                        disabled={totalAmount ? false : true}
-                    ></CustomButton>
+                    {isLoading ? (
+                        <View>
+                            <ActivityIndicator
+                                size={"large"}
+                                color={primaryColor}
+                            ></ActivityIndicator>
+                        </View>
+                    ) : (
+                        <CustomButton
+                            title="ORDER NOW"
+                            bgColor={accentColor}
+                            fgColor={white}
+                            onPress={async () => {
+                                setLoading(true);
+                                await dispatch(
+                                    addOrder(cartItemsList, totalAmount)
+                                );
+                                await dispatch(emptyCart());
+                                setLoading(false);
+                            }}
+                            disabled={totalAmount ? false : true}
+                        ></CustomButton>
+                    )}
                 </View>
             </View>
             <FlatList

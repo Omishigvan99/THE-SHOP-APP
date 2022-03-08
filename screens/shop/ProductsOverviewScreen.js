@@ -22,15 +22,16 @@ const ProductsOverviewScreen = ({ navigation }) => {
 
     const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [isRefreshing, setRefreshing] = useState(false);
 
     let loadProducts = useCallback(async () => {
-        setLoading(true);
+        setRefreshing(true);
         try {
             await dispatch(fetchProducts());
         } catch (err) {
             setError(err.message);
         }
-        setLoading(false);
+        setRefreshing(false);
     }, [dispatch, setLoading, setError]);
 
     // old way to update screen in < v4
@@ -44,12 +45,18 @@ const ProductsOverviewScreen = ({ navigation }) => {
     // making sure we load are screen again to fetch data in v6 react navigation
     useFocusEffect(
         useCallback(() => {
-            loadProducts();
+            setLoading(true);
+            loadProducts().then(() => {
+                setLoading(false);
+            });
         }, [loadProducts])
     );
 
     useEffect(() => {
-        loadProducts();
+        setLoading(true);
+        loadProducts().then(() => {
+            setLoading(false);
+        });
     }, [dispatch, loadProducts, error]);
 
     if (error) {
@@ -90,6 +97,8 @@ const ProductsOverviewScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <FlatList
+                onRefresh={loadProducts}
+                refreshing={isRefreshing}
                 contentContainerStyle={styles.listContainer}
                 style={{ width: "100%" }}
                 data={productsList}

@@ -8,6 +8,6 @@ export default class Order {
     }
 
     get readableDate() {
-        return moment(this.date).format("MMMM Do YYYY");
+        return moment(this.date).format("MMMM Do YYYY, hh:mm a");
     }
 }
