@@ -1,11 +1,67 @@
-import { StyleSheet, Text, View, ScrollView, TextInput } from "react-native";
-import React, { useEffect, useState } from "react";
+import {
+    StyleSheet,
+    View,
+    ScrollView,
+    Alert,
+} from "react-native";
+import React, { useEffect, useReducer } from "react";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../../components/CustomHeaderButton";
-import { useCallback } from "react";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import CustomFormInput from "../../components/CustomFormInput";
+import { useSelector, useDispatch } from "react-redux";
 import { addProduct, editProduct } from "../../store/actions/productsAction";
+import { white } from "../../constants/colors";
+import { useCallback } from "react";
+
+let UPDATE_FORM = "UPDATE_FROM";
+let SET_FORM_DATA = "SET_FORM_DATA";
+
+let formReducer = (state, action) => {
+    switch (action.type) {
+        case UPDATE_FORM: {
+            let updatedInputValues = {
+                ...state.inputValues,
+                [action.input]: action.value,
+            };
+
+            let updateInputValidaties = {
+                ...state.inputValidaties,
+                [action.input]: action.isValid,
+            };
+            let isUpdatedFormValid = true;
+
+            for (const key in updateInputValidaties) {
+                if (updateInputValidaties[key] === false)
+                    isUpdatedFormValid = false;
+            }
+
+            return {
+                ...state,
+                inputValues: updatedInputValues,
+                inputValidaties: updateInputValidaties,
+                isFormValid: isUpdatedFormValid,
+            };
+        }
+        case SET_FORM_DATA:
+            return {
+                inputValues: {
+                    title: action.title,
+                    description: action.description,
+                    imageUrl: action.imageUrl,
+                    price: action.price,
+                },
+                inputValidaties: {
+                    title: true,
+                    description: true,
+                    imageUrl: true,
+                    price: true,
+                },
+                isFormValid: true,
+            };
+        default:
+            return state;
+    }
+};
 
 const EditProductScreen = ({ navigation, route }) => {
     let selectedProduct = useSelector((store) => {
@@ -19,10 +75,21 @@ const EditProductScreen = ({ navigation, route }) => {
 
     let dispatch = useDispatch();
 
-    const [title, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [imageUrl, setImageUrl] = useState("");
-    const [price, setPrice] = useState("");
+    let [form, dispatchFormState] = useReducer(formReducer, {
+        inputValues: {
+            title: "",
+            description: "",
+            imageUrl: "",
+            price: "",
+        },
+        inputValidaties: {
+            title: false,
+            description: false,
+            imageUrl: false,
+            price: false,
+        },
+        isFormValid: false,
+    });
 
     useEffect(() => {
         navigation.setOptions({
@@ -36,88 +103,127 @@ const EditProductScreen = ({ navigation, route }) => {
                             name="save"
                             iconName="md-checkmark"
                             onPress={() => {
+                                if (!form.isFormValid) {
+                                    Alert.alert(
+                                        "Invalid Input Data!!!",
+                                        "Please check your input values",
+                                        [{ text: "OK", style: "default" }]
+                                    );
+                                    return;
+                                }
+
                                 if (route.params.productId) {
-                                    console.log("Edit Call");
                                     dispatch(
                                         editProduct(
                                             route.params.productId,
-                                            title,
-                                            description,
-                                            imageUrl
+                                            form.inputValues.title,
+                                            form.inputValues.description,
+                                            form.inputValues.imageUrl
                                         )
                                     );
                                 } else {
-                                    console.log("Add Call");
                                     dispatch(
                                         addProduct(
-                                            title,
-                                            description,
-                                            imageUrl,
-                                            Number(price)
+                                            form.inputValues.title,
+                                            form.inputValues.description,
+                                            form.inputValues.imageUrl,
+                                            Number(form.inputValues.price)
                                         )
                                     );
                                 }
+                                navigation.goBack();
                             }}
                         ></Item>
                     </HeaderButtons>
                 );
             },
         });
-    }, [navigation, title, description, imageUrl, price]);
+    }, [navigation, form]);
 
     useEffect(() => {
         if (selectedProduct) {
-            setName(selectedProduct.title);
-            setDescription(selectedProduct.description);
-            setImageUrl(selectedProduct.imageUrl);
-            setPrice(selectedProduct.price.toString());
+            dispatchFormState({
+                type: SET_FORM_DATA,
+                title: selectedProduct.title,
+                description: selectedProduct.description,
+                imageUrl: selectedProduct.imageUrl,
+                price: selectedProduct.price,
+            });
         }
     }, [selectedProduct]);
 
+    let inputChangeHandler = useCallback(
+        (text, isValid, inputIdentifier) => {
+            dispatchFormState({
+                type: UPDATE_FORM,
+                value: text,
+                isValid: isValid,
+                input: inputIdentifier,
+            });
+        },
+        [dispatchFormState]
+    );
+
     return (
-        <ScrollView>
+        <ScrollView style={{ backgroundColor: white }}>
             <View style={styles.form}>
-                <View style={styles.inputContainer}>
-                    <Text style={styles.inputLabel}>Name</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={title}
-                        onChangeText={(enteredValue) => {
-                            setName(enteredValue);
-                        }}
-                    ></TextInput>
-                </View>
-                <View style={styles.inputContainer}>
-                    <Text style={styles.inputLabel}>Description</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={description}
-                        onChangeText={(enteredValue) => {
-                            setDescription(enteredValue);
-                        }}
-                    ></TextInput>
-                </View>
-                <View style={styles.inputContainer}>
-                    <Text style={styles.inputLabel}>Image URL</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={imageUrl}
-                        onChangeText={(enteredValue) => {
-                            setImageUrl(enteredValue);
-                        }}
-                    ></TextInput>
-                </View>
+                <CustomFormInput
+                    label={"Name"}
+                    initialValue={form.inputValues.title}
+                    initialyValid={form.inputValidaties.title}
+                    inputOptions={{
+                        autoCapitalize: "sentences",
+                        autoCorrect: true,
+                    }}
+                    required={true}
+                    errorMessage="Name should contain at least one charachter"
+                    onInputChange={(value, validity) => {
+                        inputChangeHandler(value, validity, "title");
+                    }}
+                    minLength={2}
+                ></CustomFormInput>
+                <CustomFormInput
+                    label={"Description"}
+                    initialValue={form.inputValues.description}
+                    initialyValid={form.inputValidaties.description}
+                    inputOptions={{
+                        autoCapitalize: "sentences",
+                        autoCorrect: true,
+                        multiline: true,
+                        numberOfLines: 3,
+                    }}
+                    required={true}
+                    errorMessage="Description should contain at least one charachter"
+                    onInputChange={(value, validity) => {
+                        inputChangeHandler(value, validity, "description");
+                    }}
+                    minLength={5}
+                ></CustomFormInput>
+                <CustomFormInput
+                    label={"Image Url"}
+                    initialValue={form.inputValues.imageUrl}
+                    initialyValid={form.inputValidaties.imageUrl}
+                    required={true}
+                    errorMessage="Must provide valid image url"
+                    onInputChange={(value, validity) => {
+                        inputChangeHandler(value, validity, "imageUrl");
+                    }}
+                ></CustomFormInput>
                 {!route.params.productId ? (
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.inputLabel}>Price</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={price}
-                            onChangeText={(enteredValue) => {
-                                setPrice(enteredValue);
-                            }}
-                        ></TextInput>
-                    </View>
+                    <CustomFormInput
+                        label={"Price"}
+                        initialValue={form.inputValues.price}
+                        initialyValid={form.inputValidaties.price}
+                        inputOptions={{
+                            keyboardType: "number-pad",
+                        }}
+                        onInputChange={(value, validity) => {
+                            inputChangeHandler(value, validity, "price");
+                        }}
+                        required={true}
+                        errorMessage={"Price should be greater than zero"}
+                        min={0.1}
+                    ></CustomFormInput>
                 ) : null}
             </View>
         </ScrollView>
@@ -129,6 +235,7 @@ export default EditProductScreen;
 const styles = StyleSheet.create({
     form: {
         padding: 20,
+        backgroundColor: white,
     },
     inputContainer: {
         marginVertical: 5,
