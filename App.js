@@ -1,7 +1,8 @@
 import "react-native-gesture-handler";
 import { StyleSheet } from "react-native";
 import { enableScreens } from "react-native-screens";
-import { createStore, combineReducers } from "redux";
+import { createStore, combineReducers, applyMiddleware } from "redux";
+import ReduxThunk from "redux-thunk";
 import { Provider } from "react-redux";
 import { productsReducer } from "./store/reducers/productsReducer";
 import { cartReducer } from "./store/reducers/cartReducer";
@@ -17,7 +18,8 @@ let store = createStore(
         products: productsReducer,
         cart: cartReducer,
         order: orderReducer,
-    })
+    }),
+    applyMiddleware(ReduxThunk)
 );
 
 export default function App() {

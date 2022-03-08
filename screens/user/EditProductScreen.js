@@ -3,14 +3,15 @@ import {
     View,
     ScrollView,
     Alert,
+    ActivityIndicator,
 } from "react-native";
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../../components/CustomHeaderButton";
 import CustomFormInput from "../../components/CustomFormInput";
 import { useSelector, useDispatch } from "react-redux";
 import { addProduct, editProduct } from "../../store/actions/productsAction";
-import { white } from "../../constants/colors";
+import { white, primaryColor } from "../../constants/colors";
 import { useCallback } from "react";
 
 let UPDATE_FORM = "UPDATE_FROM";
@@ -73,6 +74,9 @@ const EditProductScreen = ({ navigation, route }) => {
         return null;
     });
 
+    const [isLoading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
     let dispatch = useDispatch();
 
     let [form, dispatchFormState] = useReducer(formReducer, {
@@ -102,7 +106,7 @@ const EditProductScreen = ({ navigation, route }) => {
                         <Item
                             name="save"
                             iconName="md-checkmark"
-                            onPress={() => {
+                            onPress={async () => {
                                 if (!form.isFormValid) {
                                     Alert.alert(
                                         "Invalid Input Data!!!",
@@ -112,26 +116,36 @@ const EditProductScreen = ({ navigation, route }) => {
                                     return;
                                 }
 
-                                if (route.params.productId) {
-                                    dispatch(
-                                        editProduct(
-                                            route.params.productId,
-                                            form.inputValues.title,
-                                            form.inputValues.description,
-                                            form.inputValues.imageUrl
-                                        )
-                                    );
-                                } else {
-                                    dispatch(
-                                        addProduct(
-                                            form.inputValues.title,
-                                            form.inputValues.description,
-                                            form.inputValues.imageUrl,
-                                            Number(form.inputValues.price)
-                                        )
-                                    );
+                                try {
+                                    if (route.params.productId) {
+                                        setLoading(true);
+                                        await dispatch(
+                                            editProduct(
+                                                route.params.productId,
+                                                form.inputValues.title,
+                                                form.inputValues.description,
+                                                form.inputValues.imageUrl
+                                            )
+                                        );
+                                        setLoading(false);
+                                        navigation.goBack();
+                                    } else {
+                                        setLoading(true);
+                                        await dispatch(
+                                            addProduct(
+                                                form.inputValues.title,
+                                                form.inputValues.description,
+                                                form.inputValues.imageUrl,
+                                                Number(form.inputValues.price)
+                                            )
+                                        );
+                                        setLoading(false);
+                                        navigation.goBack();
+                                    }
+                                } catch (err) {
+                                    setLoading(false);
+                                    setError(err);
                                 }
-                                navigation.goBack();
                             }}
                         ></Item>
                     </HeaderButtons>
@@ -150,7 +164,21 @@ const EditProductScreen = ({ navigation, route }) => {
                 price: selectedProduct.price,
             });
         }
-    }, [selectedProduct]);
+    }, [selectedProduct, error]);
+
+    useEffect(() => {
+        if (error) {
+            Alert.alert("ERROR", "Error editing the product", [
+                {
+                    text: "OK",
+                    style: "cancel",
+                    onPress: () => {
+                        setError(null);
+                    },
+                },
+            ]);
+        }
+    }, [error]);
 
     let inputChangeHandler = useCallback(
         (text, isValid, inputIdentifier) => {
@@ -163,6 +191,17 @@ const EditProductScreen = ({ navigation, route }) => {
         },
         [dispatchFormState]
     );
+
+    if (isLoading) {
+        return (
+            <View style={styles.container}>
+                <ActivityIndicator
+                    size={"large"}
+                    color={primaryColor}
+                ></ActivityIndicator>
+            </View>
+        );
+    }
 
     return (
         <ScrollView style={{ backgroundColor: white }}>
@@ -233,6 +272,11 @@ const EditProductScreen = ({ navigation, route }) => {
 export default EditProductScreen;
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
     form: {
         padding: 20,
         backgroundColor: white,

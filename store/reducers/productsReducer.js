@@ -5,6 +5,7 @@ import {
     ADD_PRODUCT,
     DELETE_PRODUCT,
     EDIT_PRODUCT,
+    SET_PRODUCTS,
 } from "../actions/productsAction";
 
 let initialState = {
@@ -14,6 +15,13 @@ let initialState = {
 
 export let productsReducer = (state = initialState, action) => {
     switch (action.type) {
+        case SET_PRODUCTS: {
+            return {
+                ...state,
+                availableProducts: action.products,
+                userProducts: action.products,
+            };
+        }
         case DELETE_PRODUCT: {
             return {
                 ...state,
@@ -27,7 +35,7 @@ export let productsReducer = (state = initialState, action) => {
         }
         case ADD_PRODUCT: {
             let newProduct = new Product(
-                uniqueId("PD"),
+                action.id,
                 "u1",
                 action.title,
                 action.imageUrl,
