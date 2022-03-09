@@ -9,8 +9,8 @@ import {
 } from "../actions/productsAction";
 
 let initialState = {
-    availableProducts: PRODUCTS,
-    userProducts: PRODUCTS.filter((item) => item.ownerId === "u1"),
+    availableProducts: [],
+    userProducts: [],
 };
 
 export let productsReducer = (state = initialState, action) => {
@@ -19,7 +19,7 @@ export let productsReducer = (state = initialState, action) => {
             return {
                 ...state,
                 availableProducts: action.products,
-                userProducts: action.products,
+                userProducts: action.userProducts,
             };
         }
         case DELETE_PRODUCT: {
@@ -36,7 +36,7 @@ export let productsReducer = (state = initialState, action) => {
         case ADD_PRODUCT: {
             let newProduct = new Product(
                 action.id,
-                "u1",
+                action.ownerId,
                 action.title,
                 action.imageUrl,
                 action.description,

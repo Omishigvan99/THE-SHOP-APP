@@ -34,7 +34,6 @@ export const signUpUser = (email, password) => {
             }
 
             let result = await response.json();
-            console.log(result);
             dispatch({
                 type: SIGNUP_USER,
                 isAuthenticated: true,
@@ -83,7 +82,6 @@ export const logInUser = (email, password) => {
             }
 
             let result = await response.json();
-            console.log(result);
             dispatch({
                 type: LOGIN_USER,
                 isAuthenticated: result.registered,

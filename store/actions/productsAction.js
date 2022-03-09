@@ -7,7 +7,8 @@ export const SET_PRODUCTS = "SET_PRODUCTS";
 
 export const fetchProducts = () => {
     try {
-        return async (dispatch) => {
+        return async (dispatch, getState) => {
+            let userId = getState().auth.userId;
             let response = await fetch(
                 "https://the-shop-app-f448d-default-rtdb.asia-southeast1.firebasedatabase.app/products.json"
             );
@@ -23,7 +24,7 @@ export const fetchProducts = () => {
                 loadedProducts.push(
                     new Product(
                         key,
-                        "u1",
+                        result[key].ownerId,
                         result[key].title,
                         result[key].imageUrl,
                         result[key].description,
@@ -32,7 +33,15 @@ export const fetchProducts = () => {
                 );
             }
 
-            dispatch({ type: SET_PRODUCTS, products: loadedProducts });
+            let userProducts = loadedProducts.filter((product) => {
+                return product.ownerId === userId;
+            });
+
+            dispatch({
+                type: SET_PRODUCTS,
+                products: loadedProducts,
+                userProducts,
+            });
         };
     } catch (err) {
         throw err;
@@ -57,6 +66,7 @@ export const addProduct = (title, description, imageUrl, price) => {
     try {
         return async (dispatch, getState) => {
             let token = getState().auth.token;
+            let userId = getState().auth.userId;
             let response = await fetch(
                 `https://the-shop-app-f448d-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=${token}`,
                 {
@@ -66,6 +76,7 @@ export const addProduct = (title, description, imageUrl, price) => {
                     },
                     body: JSON.stringify({
                         title,
+                        ownerId: userId,
                         description,
                         imageUrl,
                         price,
@@ -78,6 +89,7 @@ export const addProduct = (title, description, imageUrl, price) => {
             dispatch({
                 type: ADD_PRODUCT,
                 id: result.name,
+                ownerId: userId,
                 title,
                 description,
                 imageUrl,

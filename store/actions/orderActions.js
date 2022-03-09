@@ -4,9 +4,11 @@ export const SET_ORDERS = "SET_ORDERS";
 
 export const addOrder = (cartItems, totalAmount) => {
     let date = new Date();
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
+        let userId = getState().auth.userId;
+        let token = getState().auth.token;
         let response = await fetch(
-            "https://the-shop-app-f448d-default-rtdb.asia-southeast1.firebasedatabase.app/orders/u1.json",
+            `https://the-shop-app-f448d-default-rtdb.asia-southeast1.firebasedatabase.app/orders/${userId}.json?auth=${token}`,
             {
                 method: "POST",
                 headers: {
@@ -21,7 +23,6 @@ export const addOrder = (cartItems, totalAmount) => {
         );
 
         let result = await response.json();
-        console.log(result);
 
         dispatch({
             type: ADD_ORDER,
@@ -34,10 +35,12 @@ export const addOrder = (cartItems, totalAmount) => {
 };
 
 export const setOrders = () => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
+        let userId = getState().auth.userId;
+        let token = getState().auth.token;
         try {
             let response = await fetch(
-                "https://the-shop-app-f448d-default-rtdb.asia-southeast1.firebasedatabase.app/orders/u1.json"
+                `https://the-shop-app-f448d-default-rtdb.asia-southeast1.firebasedatabase.app/orders/${userId}.json?auth=${token}`
             );
             if (!response.ok) {
                 throw new Error("Something went wrong!!");
