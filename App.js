@@ -10,6 +10,7 @@ import { orderReducer } from "./store/reducers/orderReducer";
 
 import RootNavigator from "./Navigators/RootNavigator";
 import { useFonts } from "expo-font";
+import { authReducer } from "./store/reducers/authReducer";
 
 enableScreens();
 
@@ -18,6 +19,7 @@ let store = createStore(
         products: productsReducer,
         cart: cartReducer,
         order: orderReducer,
+        auth: authReducer,
     }),
     applyMiddleware(ReduxThunk)
 );

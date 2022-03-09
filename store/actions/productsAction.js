@@ -40,9 +40,10 @@ export const fetchProducts = () => {
 };
 
 export const deleteProduct = (productId) => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
+        let token = getState().auth.token;
         await fetch(
-            `https://the-shop-app-f448d-default-rtdb.asia-southeast1.firebasedatabase.app/products/${productId}.json`,
+            `https://the-shop-app-f448d-default-rtdb.asia-southeast1.firebasedatabase.app/products/${productId}.json?auth=${token}`,
             {
                 method: "DELETE",
             }
@@ -54,9 +55,10 @@ export const deleteProduct = (productId) => {
 
 export const addProduct = (title, description, imageUrl, price) => {
     try {
-        return async (dispatch) => {
+        return async (dispatch, getState) => {
+            let token = getState().auth.token;
             let response = await fetch(
-                "https://the-shop-app-f448d-default-rtdb.asia-southeast1.firebasedatabase.app/products.json",
+                `https://the-shop-app-f448d-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=${token}`,
                 {
                     method: "POST",
                     headers: {
@@ -89,9 +91,10 @@ export const addProduct = (title, description, imageUrl, price) => {
 
 export const editProduct = (pid, title, description, imageUrl) => {
     try {
-        return async (dispatch) => {
+        return async (dispatch, getState) => {
+            let token = getState().auth.token;
             let response = await fetch(
-                `https://the-shop-app-f448d-default-rtdb.asia-southeast1.firebasedatabase.app/products/${pid}.json`,
+                `https://the-shop-app-f448d-default-rtdb.asia-southeast1.firebasedatabase.app/products/${pid}.json?auth=${token}`,
                 {
                     method: "PATCH",
                     headers: {

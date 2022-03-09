@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, TextInput } from "react-native";
 import React, { useReducer, useEffect } from "react";
+import { textGrey } from "../constants/colors";
 
 let UPDATE_TEXT = "UPDATE_TEXT";
 let UPDATE_TOUCH = "UPDATE_TOUCH";
@@ -112,7 +113,7 @@ const styles = StyleSheet.create({
     },
     inputLabel: {
         fontFamily: "open-sans-bold",
-        color: "#777",
+        color: textGrey,
     },
     input: {
         marginVertical: 5,

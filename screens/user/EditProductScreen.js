@@ -281,18 +281,4 @@ const styles = StyleSheet.create({
         padding: 20,
         backgroundColor: white,
     },
-    inputContainer: {
-        marginVertical: 5,
-    },
-    inputLabel: {
-        fontFamily: "open-sans-bold",
-        color: "#777",
-    },
-    input: {
-        marginVertical: 5,
-        borderBottomWidth: 2,
-        borderBottomColor: "#AAA",
-        fontFamily: "open-sans-regular",
-        fontSize: 18,
-    },
 });
