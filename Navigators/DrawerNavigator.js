@@ -1,13 +1,53 @@
 import React from "react";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import { View, Text } from "react-native";
+import {
+    createDrawerNavigator,
+    DrawerContentScrollView,
+    DrawerItemList,
+    DrawerItem,
+} from "@react-navigation/drawer";
 import ShopNavigator from "./ShopNavigator";
 import OrderNavigator from "./OrderNavigtor";
 import { MyProductNavigtor } from "./MyProductNavigator";
-import { accentColor } from "../constants/colors";
+import CustomButton from "../components/CustomButton";
+import { accentColor, primaryColor, white } from "../constants/colors";
 import { Ionicons, Entypo } from "@expo/vector-icons";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../store/actions/authActions";
 
 const Drawer = createDrawerNavigator();
 
+const CustomDrawerItem = (props) => {
+    let dispatch = useDispatch();
+    return (
+        <>
+            <DrawerContentScrollView {...props}>
+                <DrawerItemList {...props}></DrawerItemList>
+            </DrawerContentScrollView>
+            <CustomButton
+                title={"LOGOUT"}
+                bgColor={primaryColor}
+                fgColor={white}
+                IconComponent={() => {
+                    return (
+                        <Ionicons
+                            name="md-log-out"
+                            size={24}
+                            color={white}
+                        ></Ionicons>
+                    );
+                }}
+                onPress={() => {
+                    dispatch(setCredentials(null, null, false));
+                }}
+                style={{
+                    justifyContent: "space-evenly",
+                    paddingHorizontal:70,
+                }}
+            ></CustomButton>
+        </>
+    );
+};
 const DrawerNavigator = () => {
     return (
         <Drawer.Navigator
@@ -15,6 +55,7 @@ const DrawerNavigator = () => {
                 headerShown: false,
                 drawerActiveTintColor: accentColor,
             }}
+            drawerContent={CustomDrawerItem}
         >
             <Drawer.Screen
                 name="Home"

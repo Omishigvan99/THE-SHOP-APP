@@ -1,5 +1,5 @@
-export const SIGNUP_USER = "SIGNUP_USER";
-export const LOGIN_USER = "LOGIN_USER";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+export const SET_CREDENTIALS = "SET_CREDENTIALS";
 
 export const signUpUser = (email, password) => {
     try {
@@ -35,11 +35,18 @@ export const signUpUser = (email, password) => {
 
             let result = await response.json();
             dispatch({
-                type: SIGNUP_USER,
+                type: SET_CREDENTIALS,
                 isAuthenticated: true,
                 token: result.idToken,
                 userId: result.localId,
             });
+            storeData(
+                result.idToken,
+                result.localId,
+                new Date(
+                    new Date().getTime() + parseInt(result.expiresIn) + 1000
+                )
+            );
         };
     } catch (err) {
         throw err;
@@ -83,13 +90,53 @@ export const logInUser = (email, password) => {
 
             let result = await response.json();
             dispatch({
-                type: LOGIN_USER,
+                type: SET_CREDENTIALS,
                 isAuthenticated: result.registered,
                 token: result.idToken,
                 userId: result.localId,
             });
+            storeData(
+                result.idToken,
+                result.localId,
+                new Date(
+                    new Date().getTime() + parseInt(result.expiresIn) * 1000
+                ).toISOString()
+            );
         };
     } catch (err) {
         throw err;
+    }
+};
+
+let logOutUser = () => {
+    return {
+        type: SET_CREDENTIALS,
+        token: null,
+        userId: null,
+        isAuthenticated: false,
+    };
+};
+
+export const setCredentials = (token, userId, isAuthenticated) => {
+    return {
+        type: SET_CREDENTIALS,
+        token: token,
+        userId: userId,
+        isAuthenticated: isAuthenticated,
+    };
+};
+
+let storeData = async (token, userId, expTime) => {
+    try {
+        AsyncStorage.setItem(
+            "userData",
+            JSON.stringify({
+                token: token,
+                userId: userId,
+                expire_time: expTime,
+            })
+        );
+    } catch (err) {
+        console.log(err);
     }
 };
