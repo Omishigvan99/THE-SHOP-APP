@@ -28,6 +28,7 @@ const ShopCartScreen = ({ navigation }) => {
                 productQuantity: store.cart.items[key].quantity,
                 productSum: store.cart.items[key].sum,
                 productImage: store.cart.items[key].image,
+                productOwnerPushToken: store.cart.items[key].ownerPushToken,
             });
         }
         return list.sort((a, b) => {

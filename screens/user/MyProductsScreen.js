@@ -1,4 +1,4 @@
-import { StyleSheet, View, FlatList, Alert } from "react-native";
+import { StyleSheet, View, FlatList, Alert, Text } from "react-native";
 import React from "react";
 import { useSelector } from "react-redux";
 import ProductCard from "../../components/ProductCard";
@@ -10,6 +10,17 @@ import { deleteProduct } from "../../store/actions/productsAction";
 const MyProductsScreen = ({ navigation }) => {
     let userProductsList = useSelector((store) => store.products.userProducts);
     let dispatch = useDispatch();
+
+    if (!userProductsList.length) {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.info}>
+                    Nothing to show here. Start by adding products.
+                </Text>
+            </View>
+        );
+    }
+
     return (
         <View style={styles.container}>
             <FlatList
@@ -77,10 +88,16 @@ export default MyProductsScreen;
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         alignItems: "center",
+        justifyContent: "center",
     },
     listContainer: {
         alignItems: "center",
         backgroundColor: white,
+    },
+    info: {
+        fontSize: 16,
+        fontFamily: "open-sans-regular",
     },
 });

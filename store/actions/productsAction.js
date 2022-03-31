@@ -1,4 +1,6 @@
 import Product from "../../models/product";
+import * as Notification from "expo-notifications";
+import { Alert } from "react-native";
 
 export const DELETE_PRODUCT = "DELETE_PRODUCT";
 export const ADD_PRODUCT = "ADD_PRODUCT";
@@ -28,7 +30,8 @@ export const fetchProducts = () => {
                         result[key].title,
                         result[key].imageUrl,
                         result[key].description,
-                        parseFloat(result[key].price)
+                        parseFloat(result[key].price),
+                        result[key].ownerPushToken
                     )
                 );
             }
@@ -67,6 +70,29 @@ export const addProduct = (title, description, imageUrl, price) => {
         return async (dispatch, getState) => {
             let token = getState().auth.token;
             let userId = getState().auth.userId;
+
+            // Accessing push token for current device
+            let pushToken = undefined;
+
+            // accessing notification permission
+            let permission = await Notification.getPermissionsAsync();
+
+            // checking for notification permission
+            if (!permission.granted) {
+                permission = await Notification.requestPermissionsAsync();
+            }
+
+            // checking again after requesting permission
+            if (!permission.granted) {
+                Alert.alert(
+                    "Permissions Error",
+                    "Requires Notificaton permission",
+                    [{ text: "Okay" }]
+                );
+            } else {
+                pushToken = (await Notification.getExpoPushTokenAsync()).data;
+            }
+
             let response = await fetch(
                 `https://the-shop-app-f448d-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=${token}`,
                 {
@@ -80,6 +106,7 @@ export const addProduct = (title, description, imageUrl, price) => {
                         description,
                         imageUrl,
                         price,
+                        ownerPushToken: pushToken,
                     }),
                 }
             );
@@ -94,6 +121,7 @@ export const addProduct = (title, description, imageUrl, price) => {
                 description,
                 imageUrl,
                 price,
+                ownerPushToken: pushToken,
             });
         };
     } catch (err) {

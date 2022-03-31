@@ -2,6 +2,7 @@ import "react-native-gesture-handler";
 import { StyleSheet } from "react-native";
 import { enableScreens } from "react-native-screens";
 import { createStore, combineReducers, applyMiddleware } from "redux";
+import * as Notification from "expo-notifications";
 import ReduxThunk from "redux-thunk";
 import { Provider } from "react-redux";
 import { productsReducer } from "./store/reducers/productsReducer";
@@ -13,6 +14,14 @@ import { useFonts } from "expo-font";
 import { authReducer } from "./store/reducers/authReducer";
 
 enableScreens();
+
+Notification.setNotificationHandler({
+    handleNotification: async () => {
+        return {
+            shouldShowAlert: true,
+        };
+    },
+});
 
 let store = createStore(
     combineReducers({

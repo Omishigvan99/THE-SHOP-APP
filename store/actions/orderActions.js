@@ -31,6 +31,26 @@ export const addOrder = (cartItems, totalAmount) => {
             totalAmount: totalAmount,
             date: date,
         });
+
+        // making push notification request when order is placed
+        // here we are triggering from inside of app but this is done mostly on server side applications
+        for (const cartItem of cartItems) {
+            if (cartItem.productOwnerPushToken) {
+                await fetch("https://exp.host/--/api/v2/push/send", {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                        "Accept-encoding": "gzip,deflate",
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        to: cartItem.productOwnerPushToken,
+                        title: "Product Ordered",
+                        body: `Order for ${cartItem.productTitle} X ${cartItem.productQuantity}`,
+                    }),
+                });
+            }
+        }
     };
 };
 

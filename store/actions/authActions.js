@@ -108,15 +108,6 @@ export const logInUser = (email, password) => {
     }
 };
 
-let logOutUser = () => {
-    return {
-        type: SET_CREDENTIALS,
-        token: null,
-        userId: null,
-        isAuthenticated: false,
-    };
-};
-
 export const setCredentials = (token, userId, isAuthenticated) => {
     return {
         type: SET_CREDENTIALS,

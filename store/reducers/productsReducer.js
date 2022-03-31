@@ -40,7 +40,8 @@ export let productsReducer = (state = initialState, action) => {
                 action.title,
                 action.imageUrl,
                 action.description,
-                action.price
+                action.price,
+                action.ownerPushToken
             );
 
             return {
@@ -60,7 +61,8 @@ export let productsReducer = (state = initialState, action) => {
                 action.title,
                 action.imageUrl,
                 action.description,
-                state.userProducts[productIndex].price
+                state.userProducts[productIndex].price,
+                state.userProducts[productIndex].ownerPushToken
             );
             let updatedUserProducts = [...state.userProducts];
             updatedUserProducts[productIndex] = editedProduct;

@@ -39,7 +39,8 @@ export let cartReducer = (state = initialState, action) => {
                     action.product.title,
                     action.product.price,
                     action.product.price,
-                    action.product.imageUrl
+                    action.product.imageUrl,
+                    action.product.ownerPushToken
                 );
                 updatedState = {
                     ...state,
